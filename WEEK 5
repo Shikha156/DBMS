@@ -1,0 +1,109 @@
+create database company2;
+use company2;
+
+create table dept
+(
+deptno int primary key,
+dname varchar(30),
+dloc varchar(30));
+
+
+create table employee
+(
+empno int primary key,
+ename varchar(30),
+mgrno varchar(30),
+hiredate date,
+sal int,
+deptno int,
+foreign key(deptno)references dept(deptno));
+
+create table incentives
+(
+empno int ,
+incentivedate date,
+primary key(empno,incentivedate),
+incentiveamount int,
+foreign key(empno)references employee(empno));
+
+create table project
+(
+pno int primary key,
+ploc varchar(30),
+pname varchar(30));
+
+create table assignedto
+(
+empno int,
+pno int,
+primary key(empno,pno),
+jobrole varchar(30),
+foreign key(empno)references employee(empno),
+foreign key(pno)references project(pno));
+
+insert into dept
+values(1,"cse","block1"),
+(2,"ca","block2"),
+(3,"it","block3"),
+(4,"mech","block4"),
+(5,"marketing","block5"),
+(6,"sales","block6");
+
+insert into employee
+values(11,"jigar",11,"2008-10-01",21000,1),
+(21,"harsh",22,"2008-10-02",22000,2),
+(31,"ibrahim",33,"2008-10-03",23000,3),
+(41,"ram",44,"2008-10-04",24000,4),
+(51,"ravan",55,"2008-10-05",25000,5),
+(61,"hanuman",66,"2008-10-06",26000,6);
+
+insert into incentives
+values(11,"2008-11-07",27000),
+(21,"2008-11-08",28000),
+(31,"2008-11-09",29000),
+(41,"2008-11-10",30000),
+(51,"2008-11-11",31000),
+(61,"2008-11-12",32000);
+ delete from incentives where empno = 61;
+
+insert into project
+values(101,"gujarat","css-swap"),
+(102,"karnataka","java-oops"),
+(103,"delhi","ld-gates"),
+(104,"goa","dbms-sql"),
+(105,"block2","dst-stack"),
+(106,"block1","maths-problem");
+
+
+
+insert assignedto
+values(11,101,"ssp1"),
+(21,102,"ssp2"),
+(31,103,"ssp3"),
+(41,104,"ssp4"),
+(51,105,"ssp5"),
+(61,106,"ssp6");
+
+select *from dept;
+select *from employee;
+select *from incentives;
+select *from project;
+select *from assignedto;
+
+select empno
+from employee
+where empno in (select empno
+           from assignedto
+           where pno in (select pno
+ from project
+                          where ploc in ('dubai','delh','goa')));
+ 
+select empno
+from employee
+where empno not in (select empno
+from incentives);
+                   
+                   
+select ename,empno,dname,jobrole,dloc,ploc
+from employee e,dept d,project p,assignedto a
+where e.empno=a.empno && p.pno=a.pno && d.deptno=e.deptno;  
